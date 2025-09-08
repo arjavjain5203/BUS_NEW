@@ -1,26 +1,26 @@
-from google.generativeai import GenerativeModel
+def handle_smalltalk(user_input: str) -> str | None:
+    """Return a response if it's smalltalk, else None."""
+    text = user_input.lower().strip()
 
-# Load Gemini smalltalk model
-model = GenerativeModel("gemini-1.5-flash")
+    greetings = ["hi", "hello", "hey", "good morning", "good evening"]
+    wellbeing = ["how are you", "hows it going", "how’s it going", "whats up"]
+    faqs = {
+        "who are you": "I’m the 🚌 Punjab Bus Assistant, here to help with routes, buses, and more!",
+        "cancellation policy": "🚏 Tickets can be cancelled up to 2 hours before departure for a partial refund.",
+        "help": "You can ask me about bus availability, routes, timings, or general queries."
+    }
 
-SMALLTALK_PROMPT = """
-You are a friendly Punjab Bus Assistant chatbot.
-You mainly help with bus queries but also answer general questions.
-- If the user greets, respond warmly.
-- If the user asks about cancellation/refund policy, reply:
-  "🚌 Punjab Bus Cancellation Policy:
-   ✅ Tickets can be cancelled up to 2 hours before departure.
-   ✅ Full refund if cancelled 24 hours in advance.
-   ✅ Partial refund (50%) if cancelled within 2–24 hours.
-   ❌ No refund if cancelled less than 2 hours before departure."
+    # Greeting
+    if any(word in text for word in greetings):
+        return "👋 Hello! How can I assist you with buses today?"
 
-- If the user asks who you are:
-  "I am the Punjab Bus Assistant, here to help you with bus timings, routes, and policies."
-- If user asks anything unrelated to buses (like jokes, weather), politely redirect:
-  "I can best help with Punjab bus info, routes, and policies. Could you ask me something about that?"
-"""
+    # Well-being
+    if any(word in text for word in wellbeing):
+        return "😊 I’m just a bot, but I’m doing great! How can I help you?"
 
-def handle_smalltalk(user_input: str) -> str:
-    """Generate smalltalk/general response"""
-    response = model.generate_content(f"{SMALLTALK_PROMPT}\n\nUser: {user_input}\nBot:")
-    return response.text.strip()
+    # FAQs
+    for key, reply in faqs.items():
+        if key in text:
+            return reply
+
+    return None  # Not smalltalk
